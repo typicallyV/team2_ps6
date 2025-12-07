@@ -14,12 +14,15 @@ export default function Prescription() {
 
   // Fetch prescriptions from backend on mount
   useEffect(() => {
+    console.log("🔄 Fetching prescriptions from: http://localhost:5000/prescriptions");
     fetch("http://localhost:5000/prescriptions")
       .then((res) => {
+        console.log("📊 Response status:", res.status);
         if (!res.ok) throw new Error("Network response was not ok");
         return res.json();
       })
       .then((data) => {
+        console.log("✅ Prescriptions fetched:", data);
         // Expecting array of { _id, name, date, url } (or similar)
         const normalized = data.map((d) => ({
           id: d._id || d.id || `${d.name}-${Math.random()}`,
@@ -30,7 +33,8 @@ export default function Prescription() {
         }));
         setUploadedFiles(normalized);
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error("❌ Fetch error:", err);
         // backend unavailable — keep the local fallback state
       });
   }, []);
@@ -44,46 +48,50 @@ export default function Prescription() {
     };
   }, [previewObjectUrl]);
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Attempt server upload first
+    console.log("📤 Uploading file:", file.name);
+
+    // Create FormData and append file
     const formData = new FormData();
     formData.append("file", file);
 
-    fetch("http://localhost:5000/upload", {
-      method: "POST",
-      body: formData,
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Upload failed");
-        return res.json();
-      })
-      .then((data) => {
-        // Expect server to return created record with at least { _id, name, date, url }
-        const record = {
-          id: data._id || data.id || `${data.name}-${Math.random()}`,
-          name: data.name || file.name,
-          date: data.date ? new Date(data.date) : new Date(),
-          url: data.url || data.path || null,
-          file: null,
-        };
-        setUploadedFiles((prev) => [record, ...prev]);
-      })
-      .catch(() => {
-        // Fallback: store locally with the actual File object for preview/open
-        const localRecord = {
-          id: `local-${uploadedFiles.length + 1}-${Date.now()}`,
-          name: file.name,
-          date: new Date(),
-          url: null,
-          file,
-        };
-        setUploadedFiles((prev) => [localRecord, ...prev]);
+    try {
+      const response = await fetch("http://localhost:5000/upload", {
+        method: "POST",
+        body: formData,
       });
 
-    // keep file in files state if needed
+      console.log("📊 Upload response status:", response.status);
+      if (!response.ok) throw new Error("Upload failed");
+
+      const data = await response.json();
+      console.log("✅ Upload success:", data);
+      
+      // Expect server to return created record with at least { _id, name, date, url }
+      const record = {
+        id: data._id || data.id || `${data.name}-${Math.random()}`,
+        name: data.name || file.name,
+        date: data.date ? new Date(data.date) : new Date(),
+        url: data.url || data.path || null,
+        file: null,
+      };
+      setUploadedFiles((prev) => [record, ...prev]);
+    } catch (error) {
+      console.error("❌ Upload error:", error);
+      // Fallback: store locally with the actual File object for preview/open
+      const localRecord = {
+        id: `local-${uploadedFiles.length + 1}-${Date.now()}`,
+        name: file.name,
+        date: new Date(),
+        url: null,
+        file,
+      };
+      setUploadedFiles((prev) => [localRecord, ...prev]);
+    }
+
     setFiles([file]);
   };
 
@@ -120,6 +128,67 @@ export default function Prescription() {
       return URL.createObjectURL(item.file);
     }
     return null;
+  };
+
+  const handleDownload = async (fileItem) => {
+    if (!fileItem) return;
+    try {
+      if (fileItem.url) {
+        // server URL - fetch blob then download
+        const url = fileItem.url.startsWith("http")
+          ? fileItem.url
+          : `http://localhost:5000/${fileItem.url.replace(/^\/+/, "")}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("Failed to download file");
+        const blob = await res.blob();
+        const tmpUrl = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = tmpUrl;
+        a.download = fileItem.name || "download";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(tmpUrl);
+      } else if (fileItem.file) {
+        // local File object
+        const tmpUrl = URL.createObjectURL(fileItem.file);
+        const a = document.createElement("a");
+        a.href = tmpUrl;
+        a.download = fileItem.name || "download";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(tmpUrl);
+      } else {
+        alert("No file available to download for this item.");
+      }
+    } catch (err) {
+      console.error("Download error:", err);
+      alert("Download failed.");
+    }
+  };
+
+  const handleDelete = async (fileItem) => {
+    if (!fileItem) return;
+    // local-only item -> just remove from state
+    if (String(fileItem.id).startsWith("local-")) {
+      setUploadedFiles((prev) => prev.filter((f) => f.id !== fileItem.id));
+      return;
+    }
+
+    // Attempt server delete
+    try {
+      const res = await fetch(`http://localhost:5000/prescriptions/${fileItem.id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error("Delete failed");
+      setUploadedFiles((prev) => prev.filter((f) => f.id !== fileItem.id));
+    } catch (err) {
+      console.error("Delete error:", err);
+      alert("Delete failed on server. Item removed locally.");
+      // fallback: remove locally anyway
+      setUploadedFiles((prev) => prev.filter((f) => f.id !== fileItem.id));
+    }
   };
 
   return (
@@ -175,15 +244,15 @@ export default function Prescription() {
                     {fileItem.date ? format(new Date(fileItem.date), "dd MMM yyyy") : ""}
                   </p>
                 </div>
+
                 <div style={{ display: "flex", gap: 8 }}>
+                  {/* View (preview modal) */}
                   <button
                     onClick={() => {
-                      // If server URL available, preview that; otherwise, preview local File object
                       if (fileItem.url) {
                         setSelectedFile(fileItem.url);
                       } else if (fileItem.file) {
                         setSelectedFile(fileItem.file);
-                        // create and store previewObjectUrl for cleanup
                         if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl);
                         const objUrl = URL.createObjectURL(fileItem.file);
                         setPreviewObjectUrl(objUrl);
@@ -204,9 +273,9 @@ export default function Prescription() {
                     View
                   </button>
 
+                  {/* Open in new tab */}
                   <button
                     onClick={() => {
-                      // open in new tab if possible
                       if (fileItem.url) {
                         openInNewTab(fileItem.url);
                       } else if (fileItem.file) {
@@ -226,6 +295,39 @@ export default function Prescription() {
                     }}
                   >
                     Open
+                  </button>
+
+                  {/* Download */}
+                  <button
+                    onClick={() => handleDownload(fileItem)}
+                    style={{
+                      background: "#10b981",
+                      color: "#fff",
+                      padding: "8px 14px",
+                      borderRadius: 8,
+                      border: "none",
+                      cursor: fileItem.url || fileItem.file ? "pointer" : "not-allowed",
+                      opacity: fileItem.url || fileItem.file ? 1 : 0.6,
+                    }}
+                  >
+                    Download
+                  </button>
+
+                  {/* Delete */}
+                  <button
+                    onClick={() => {
+                      if (window.confirm("Delete this prescription?")) handleDelete(fileItem);
+                    }}
+                    style={{
+                      background: "#ef4444",
+                      color: "#fff",
+                      padding: "8px 14px",
+                      borderRadius: 8,
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Delete
                   </button>
                 </div>
               </div>

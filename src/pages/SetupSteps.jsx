@@ -34,10 +34,6 @@ export default function SetupSteps() {
         alignItems: "center",
       }}
     >
-      
-      <p style={{ fontSize: "18px", color: "#444", marginBottom: "30px" }}>
-        Follow these simple steps to set up ElderEase.
-      </p>
 
       <div
         style={{
@@ -68,7 +64,7 @@ export default function SetupSteps() {
                   : undefined
               }
               style={{
-                width: "250px",
+                width: "210px",
                 padding: "25px",
                 borderRadius: "12px",
                 background: "#f1f6ff",

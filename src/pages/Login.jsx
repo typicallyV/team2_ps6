@@ -11,7 +11,7 @@ export default function Login() {
     <div
       style={{
         minHeight: "100vh",
-        background: "linear-gradient(to bottom right, #f5e5df, #e8f0ff)",
+        background: "#e7ebd5", // soft sage
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -21,14 +21,24 @@ export default function Login() {
       <div
         style={{
           width: "480px",
-          background: "#fff",
+          background: "#faf9ed", // warm light cream
           borderRadius: "22px",
           padding: "40px",
-          boxShadow: "0 20px 40px rgba(0,0,0,0.1)",
+          boxShadow: "0 6px 18px rgba(0,0,0,0.15)",
         }}
       >
-        <h1 style={{ marginBottom: 10 }}>Welcome Back</h1>
-        <p style={{ marginBottom: 30, opacity: 0.7 }}>
+        <h1
+          style={{
+            marginBottom: "10px",
+            fontWeight: "700",
+            color: "#1b1b1b",
+            fontSize: "32px",
+          }}
+        >
+          Welcome Back
+        </h1>
+
+        <p style={{ marginBottom: 30, color: "#5f5f5f", fontSize: "16px" }}>
           Log in to continue your ElderEase journey.
         </p>
 
@@ -55,14 +65,15 @@ export default function Login() {
 
         <p
           style={{
-            marginTop: 20,
+            marginTop: 25,
             textAlign: "center",
-            opacity: 0.7,
+            color: "#3a3a3a",
+            fontSize: "15px",
           }}
         >
-          Don’t have an account?{" "}
-          <Link to="/signup" style={{ color: "#ff6600" }}>
-            Sign up
+          Don't have an account?{" "}
+          <Link to="/signup" style={{ color: "#d47a28", fontWeight: "600" }}>
+            Sign Up
           </Link>
         </p>
       </div>
@@ -72,22 +83,26 @@ export default function Login() {
 
 const inputStyle = {
   width: "100%",
-  padding: "14px",
-  marginBottom: "20px",
-  borderRadius: "12px",
-  border: "1px solid #ddd",
-  background: "#f8f3ef",
-  fontSize: "15px",
+  padding: "16px",
+  marginBottom: "22px",
+  borderRadius: "14px",
+  border: "1px solid #dcd8cd",
+  background: "#efeee4",
+  fontSize: "16px",
+  color: "#3b3b3b",
+  outline: "none",
 };
 
 const buttonStyle = {
   width: "100%",
-  padding: "14px",
-  background: "linear-gradient(to right, #ff8a00, #e53e3e)",
+  padding: "16px",
+  background: "#e98534", // warm orange
   border: "none",
-  borderRadius: "30px",
+  borderRadius: "18px",
   color: "white",
-  fontSize: "16px",
+  fontSize: "18px",
   cursor: "pointer",
-  marginTop: "10px",
+  fontWeight: "600",
+  marginTop: "8px",
+  boxShadow: "0 4px 12px rgba(233,133,52,0.35)",
 };

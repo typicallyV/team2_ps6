@@ -7,6 +7,8 @@ import Dashboard from "./pages/Dashboard.jsx";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
 import Prescription from "./pages/Prescription.jsx";
+import VoiceAssistant from "./pages/VoiceAssistant.jsx";
+import Reminder from "./pages/Reminder.jsx";
 
 export default function App() {
   return (
@@ -19,6 +21,8 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/prescriptions" element={<Prescription />} />
+        <Route path="/voice-assistant" element={<VoiceAssistant />} />
+        <Route path="/reminder" element={<Reminder />} />
       </Routes>
     </BrowserRouter>
   );

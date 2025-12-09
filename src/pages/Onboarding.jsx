@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+const ONBOARDING_KEY = "elderease_onboarding";
+
 export default function Onboarding() {
-  const navigate = useNavigate(); // ✅ FIXED — now inside component
+  const navigate = useNavigate();
 
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -31,7 +33,9 @@ export default function Onboarding() {
     if (step < 7) {
       setStep(step + 1);
     } else {
-      navigate("/dashboard"); // navigate only at end
+      // Save onboarding data to localStorage
+      localStorage.setItem(ONBOARDING_KEY, JSON.stringify(formData));
+      navigate("/dashboard");
     }
   };
 
@@ -40,41 +44,53 @@ export default function Onboarding() {
   };
 
   return (
-    <div style={{
-      minHeight: "100vh",
-      background: "linear-gradient(to bottom right, #f5e5df, #e8f0ff)",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      padding: "20px"
-    }}>
-      
-      <div style={{
-        width: "600px",
-        background: "white",
-        borderRadius: "20px",
-        padding: "40px",
-        boxShadow: "0 20px 40px rgba(0,0,0,0.1)"
-      }}>
-        
-        {/* Progress Bar */}
-        <div style={{
-          height: "5px", background: "#eee",
-          borderRadius: "10px", overflow: "hidden",
-          marginBottom: "30px"
-        }}>
-          <div style={{
-            width: `${(step / 7) * 100}%`,
-            height: "100%",
-            background: "linear-gradient(to right, #ff8a00, #e53e3e)"
-          }}></div>
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#E4E9D9",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "20px"
+      }}
+    >
+
+      <div
+        style={{
+          width: "600px",
+          background: "#F7F6EB",
+          borderRadius: "24px",
+          padding: "40px",
+          boxShadow: "0 10px 30px rgba(0,0,0,0.08)"
+        }}
+      >
+
+        {/* Progress bar */}
+        <div
+          style={{
+            width: "100%",
+            height: "6px",
+            background: "#D4D8C6",
+            borderRadius: "10px",
+            marginBottom: "25px",
+            overflow: "hidden"
+          }}
+        >
+          <div
+            style={{
+              width: `${(step / 7) * 100}%`,
+              height: "100%",
+              background: "#EB8A2F",
+              transition: "0.3s ease"
+            }}
+          ></div>
         </div>
 
-        <p style={{ opacity: 0.7 }}>Step {step} of 7</p>
-        <h1 style={{ marginTop: "10px" }}>{current.title}</h1>
-        <p style={{ opacity: 0.6 }}>{current.subtitle}</p>
+        <p style={{ color: "#6F6F6F", margin: 0 }}>Step {step} of 7</p>
 
-        {/* Input */}
+        <h1 style={{ marginTop: "10px", color: "#2A2A2A" }}>{current.title}</h1>
+        <p style={{ color: "#6F6F6F", marginTop: "4px" }}>{current.subtitle}</p>
+
         <input
           type="text"
           placeholder={current.placeholder}
@@ -84,38 +100,43 @@ export default function Onboarding() {
           }
           style={{
             width: "100%",
-            padding: "15px",
+            padding: "16px 18px",
             marginTop: "25px",
-            borderRadius: "12px",
-            border: "1px solid #ddd",
+            borderRadius: "14px",
+            border: "1px solid #D4D8C6",
+            background: "#EEEDE4",
             fontSize: "16px",
-            background: "#f8f3ef"
+            outline: "none"
           }}
         />
 
         {/* Bottom */}
-        <div style={{
-          marginTop: "40px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between"
-        }}>
-          
+        <div
+          style={{
+            marginTop: "45px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between"
+          }}
+        >
+
           <button
             onClick={handleBack}
             disabled={step === 1}
             style={{
-              padding: "10px 20px",
-              background: "#fff",
-              border: "1px solid #ddd",
-              borderRadius: "30px",
-              cursor: step === 1 ? "not-allowed" : "pointer"
+              padding: "12px 26px",
+              background: "#FFFFFF",
+              border: "1px solid #D4D8C6",
+              borderRadius: "18px",
+              cursor: step === 1 ? "not-allowed" : "pointer",
+              color: "#2A2A2A",
+              fontSize: "15px"
             }}
           >
-            ⟵ Back
+            ← Back
           </button>
 
-          <div style={{ display: "flex", gap: "8px" }}>
+          <div style={{ display: "flex", gap: "10px" }}>
             {[1, 2, 3, 4, 5, 6, 7].map((s) => (
               <div
                 key={s}
@@ -123,7 +144,7 @@ export default function Onboarding() {
                   width: "10px",
                   height: "10px",
                   borderRadius: "50%",
-                  background: s === step ? "#ff8a00" : "#ddd"
+                  background: s === step ? "#EB8A2F" : "#D4D8C6"
                 }}
               ></div>
             ))}
@@ -132,18 +153,19 @@ export default function Onboarding() {
           <button
             onClick={handleNext}
             style={{
-              padding: "10px 25px",
-              background: "linear-gradient(to right, #ff8a00, #e53e3e)",
-              border: "none",
+              padding: "12px 26px",
+              background: "#EB8A2F",
               color: "white",
-              borderRadius: "30px",
+              border: "none",
+              borderRadius: "18px",
+              fontSize: "15px",
               cursor: "pointer"
             }}
           >
-            Next ⟶
+            {step === 7 ? "Complete →" : "Next →"}
           </button>
-        </div>
 
+        </div>
       </div>
     </div>
   );

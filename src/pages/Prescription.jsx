@@ -192,29 +192,58 @@ export default function Prescription() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", padding: 24, background: "#f3f6fb" }}>
-      <h1 style={{ textAlign: "center", color: "#3b82f6", fontSize: 28, marginBottom: 20 }}>
+    <div style={{ minHeight: "100vh", padding: 24, background: "#E4E9D9", fontFamily: "Poppins, Inter, sans-serif" }}>
+      {/* Navbar */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "18px 30px",
+          background: "rgba(244, 242, 235, 0.7)",
+          backdropFilter: "blur(8px)",
+          borderRadius: "14px",
+          marginBottom: "30px",
+        }}
+      >
+        <h2 style={{ fontSize: "28px", color: "#EB8A2F", margin: 0, fontWeight: 700 }}>
+          ElderEase
+        </h2>
+        <div style={{ fontSize: "20px" }}>📄</div>
+      </div>
+
+      <h1 style={{ textAlign: "center", color: "#2A2A2A", fontSize: 32, marginBottom: 20, fontWeight: 700 }}>
         My Prescriptions
       </h1>
 
       {/* Upload Section */}
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: 32 }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: 40 }}>
         <label
           style={{
             width: "100%",
             maxWidth: 560,
             cursor: "pointer",
-            background: "#fff",
-            border: "2px dashed #60a5fa",
-            borderRadius: 12,
-            padding: 28,
+            background: "#FAF9F0",
+            border: "2px dashed #D4D8C6",
+            borderRadius: 16,
+            padding: 32,
             textAlign: "center",
-            transition: "border-color .15s ease",
+            transition: "all .2s ease",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = "#EB8A2F";
+            e.currentTarget.style.background = "#FEF8F0";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = "#D4D8C6";
+            e.currentTarget.style.background = "#FAF9F0";
           }}
         >
-          <AiOutlineUpload style={{ fontSize: 48, color: "#60a5fa", marginBottom: 12 }} />
-          <p style={{ color: "#374151", marginBottom: 6 }}>Drag & drop or click to upload a file</p>
-          <p style={{ color: "#9ca3af", fontSize: 13 }}>PDF, JPG, PNG allowed</p>
+          <AiOutlineUpload style={{ fontSize: 48, color: "#EB8A2F", marginBottom: 12 }} />
+          <p style={{ color: "#2A2A2A", marginBottom: 8, fontSize: 16, fontWeight: 600 }}>
+            Drag & drop or click to upload
+          </p>
+          <p style={{ color: "#8B8B8B", fontSize: 14 }}>PDF, JPG, PNG allowed</p>
           <input type="file" style={{ display: "none" }} onChange={handleFileChange} />
         </label>
       </div>
@@ -222,9 +251,11 @@ export default function Prescription() {
       {/* Uploaded Prescriptions */}
       <div style={{ maxWidth: 900, margin: "0 auto" }}>
         {uploadedFiles.length === 0 ? (
-          <p style={{ textAlign: "center", color: "#6b7280" }}>No prescriptions uploaded yet.</p>
+          <p style={{ textAlign: "center", color: "#8B7B6F", fontSize: 16 }}>
+            No prescriptions uploaded yet.
+          </p>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {uploadedFiles.map((fileItem) => (
               <div
                 key={fileItem.id}
@@ -232,20 +263,23 @@ export default function Prescription() {
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  background: "#fff",
-                  padding: 14,
-                  borderRadius: 10,
-                  boxShadow: "0 6px 18px rgba(15,23,42,0.06)",
+                  background: "#FAF9F0",
+                  padding: 18,
+                  borderRadius: 14,
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
+                  border: "1px solid #EDE9DF",
                 }}
               >
                 <div>
-                  <p style={{ fontWeight: 600, color: "#111827", margin: 0 }}>{fileItem.name}</p>
-                  <p style={{ color: "#6b7280", fontSize: 13, margin: 0 }}>
+                  <p style={{ fontWeight: 600, color: "#2A2A2A", margin: 0, fontSize: 16 }}>
+                    {fileItem.name}
+                  </p>
+                  <p style={{ color: "#8B7B6F", fontSize: 14, margin: "6px 0 0 0" }}>
                     {fileItem.date ? format(new Date(fileItem.date), "dd MMM yyyy") : ""}
                   </p>
                 </div>
 
-                <div style={{ display: "flex", gap: 8 }}>
+                <div style={{ display: "flex", gap: 10 }}>
                   {/* View (preview modal) */}
                   <button
                     onClick={() => {
@@ -261,13 +295,15 @@ export default function Prescription() {
                       }
                     }}
                     style={{
-                      background: "#3b82f6",
+                      background: "#EB8A2F",
                       color: "#fff",
-                      padding: "8px 14px",
-                      borderRadius: 8,
+                      padding: "10px 16px",
+                      borderRadius: 10,
                       border: "none",
                       cursor: fileItem.url || fileItem.file ? "pointer" : "not-allowed",
                       opacity: fileItem.url || fileItem.file ? 1 : 0.6,
+                      fontSize: 14,
+                      fontWeight: 500,
                     }}
                   >
                     View
@@ -285,13 +321,15 @@ export default function Prescription() {
                       }
                     }}
                     style={{
-                      background: "#06b6d4",
-                      color: "#fff",
-                      padding: "8px 14px",
-                      borderRadius: 8,
+                      background: "#D4D8C6",
+                      color: "#2A2A2A",
+                      padding: "10px 16px",
+                      borderRadius: 10,
                       border: "none",
                       cursor: fileItem.url || fileItem.file ? "pointer" : "not-allowed",
                       opacity: fileItem.url || fileItem.file ? 1 : 0.6,
+                      fontSize: 14,
+                      fontWeight: 500,
                     }}
                   >
                     Open
@@ -301,13 +339,15 @@ export default function Prescription() {
                   <button
                     onClick={() => handleDownload(fileItem)}
                     style={{
-                      background: "#10b981",
+                      background: "#C5B8A3",
                       color: "#fff",
-                      padding: "8px 14px",
-                      borderRadius: 8,
+                      padding: "10px 16px",
+                      borderRadius: 10,
                       border: "none",
                       cursor: fileItem.url || fileItem.file ? "pointer" : "not-allowed",
                       opacity: fileItem.url || fileItem.file ? 1 : 0.6,
+                      fontSize: 14,
+                      fontWeight: 500,
                     }}
                   >
                     Download
@@ -319,12 +359,14 @@ export default function Prescription() {
                       if (window.confirm("Delete this prescription?")) handleDelete(fileItem);
                     }}
                     style={{
-                      background: "#ef4444",
+                      background: "#D9534F",
                       color: "#fff",
-                      padding: "8px 14px",
-                      borderRadius: 8,
+                      padding: "10px 16px",
+                      borderRadius: 10,
                       border: "none",
                       cursor: "pointer",
+                      fontSize: 14,
+                      fontWeight: 500,
                     }}
                   >
                     Delete
@@ -342,7 +384,7 @@ export default function Prescription() {
           style={{
             position: "fixed",
             inset: 0,
-            background: "rgba(0,0,0,0.7)",
+            background: "rgba(0,0,0,0.5)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -359,12 +401,13 @@ export default function Prescription() {
         >
           <div
             style={{
-              background: "#fff",
-              padding: 16,
-              borderRadius: 8,
+              background: "#FAF9F0",
+              padding: 24,
+              borderRadius: 16,
               maxWidth: "90vw",
               maxHeight: "90vh",
               overflow: "auto",
+              boxShadow: "0 20px 50px rgba(0,0,0,0.2)",
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -393,7 +436,7 @@ export default function Prescription() {
               />
             )}
 
-            <div style={{ textAlign: "right", marginTop: 8 }}>
+            <div style={{ textAlign: "right", marginTop: 16 }}>
               <button
                 onClick={() => {
                   if (previewObjectUrl) {
@@ -403,12 +446,13 @@ export default function Prescription() {
                   setSelectedFile(null);
                 }}
                 style={{
-                  padding: "8px 12px",
-                  background: "#3b82f6",
+                  padding: "10px 20px",
+                  background: "#EB8A2F",
                   color: "#fff",
                   border: "none",
-                  borderRadius: 6,
+                  borderRadius: 10,
                   cursor: "pointer",
+                  fontWeight: 600,
                 }}
               >
                 Close

@@ -14,9 +14,13 @@ export default function SetupSteps() {
       desc: "Upload prescription images for easy access later."
     },
     {
-      title: "Set Calendar",
-      desc: "Add medicine reminders and track checkups."
-    }
+      title: "Reminder",
+      desc: "Set up medicine and appointment reminders."
+    },
+    {
+      title: "Voice Assistant",
+      desc: "Enable voice commands for hands-free operation."
+    },
   ];
 
   return (
@@ -47,6 +51,8 @@ export default function SetupSteps() {
         {flashcards.map((card) => {
           const isPatientCard = card.title === "Enter Patient Info";
           const isPrescriptionCard = card.title === "Upload Prescription";
+          const isReminderCard = card.title === "Reminder";
+          const isVoiceCard = card.title === "Voice Assistant";
           return (
             <div
               key={card.title}
@@ -55,6 +61,10 @@ export default function SetupSteps() {
                   ? () => navigate("/onboarding")
                   : isPrescriptionCard
                   ? () => navigate("/prescriptions")
+                  : isReminderCard
+                  ? () => navigate("/reminder")
+                  : isVoiceCard
+                  ? () => navigate("/voice-assistant")
                   : undefined
               }
               style={{
@@ -64,7 +74,7 @@ export default function SetupSteps() {
                 background: "#f1f6ff",
                 boxShadow: "0 8px 20px rgba(0,0,0,0.06)",
                 textAlign: "center",
-                cursor: isPatientCard || isPrescriptionCard ? "pointer" : "default"
+                cursor: isPatientCard || isPrescriptionCard || isReminderCard || isVoiceCard ? "pointer" : "default"
               }}
             >
               <h3 style={{ marginBottom: "10px" }}>{card.title}</h3>

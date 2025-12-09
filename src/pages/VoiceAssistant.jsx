@@ -1,19 +1,32 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import SetupSteps from "./SetupSteps.jsx";
+import React, { useState } from "react";
 
-export default function Landing() {
-  const navigate = useNavigate();
+export default function VoiceAssistant() {
+  const [isListening, setIsListening] = useState(false);
+  const [transcript, setTranscript] = useState("");
+
+  const handleMicClick = () => {
+    setIsListening(!isListening);
+    if (!isListening) {
+      setTranscript("");
+      // TODO: Start speech recognition
+      console.log("🎤 Listening...");
+    } else {
+      // TODO: Stop speech recognition
+      console.log("🎤 Stopped listening");
+    }
+  };
 
   return (
     <div
       style={{
-        background: "#F6F7EC",
         minHeight: "100vh",
+        background: "#F6F7EC",
+        display: "flex",
+        flexDirection: "column",
         fontFamily: "Poppins, Inter, sans-serif",
       }}
     >
-      {/* 🌟 TRANSLUCENT NAVBAR */}
+      {/* Navbar */}
       <div
         style={{
           width: "100%",
@@ -25,20 +38,12 @@ export default function Landing() {
           top: 0,
           left: 0,
           zIndex: 100,
-          background: "rgba(246, 247, 236, 0.6)", // translucent
-          backdropFilter: "blur(10px)", // blur
+          background: "rgba(246, 247, 236, 0.6)",
+          backdropFilter: "blur(10px)",
           borderBottom: "1px solid rgba(0,0,0,0.05)",
         }}
       >
-        {/* Logo */}
-        <h2
-          style={{
-            fontSize: "28px",
-            color: "#E86E23",
-            margin: 0,
-            fontWeight: 700,
-          }}
-        >
+        <h2 style={{ fontSize: "28px", color: "#E86E23", margin: 0, fontWeight: 700 }}>
           ElderEase
         </h2>
 
@@ -114,10 +119,10 @@ export default function Landing() {
         </div>
       </div>
 
-      {/* MAIN HERO SECTION */}
+      {/* Main Content */}
       <div
         style={{
-          minHeight: "100vh",
+          flex: 1,
           paddingTop: "140px",
           paddingBottom: "40px",
           display: "flex",
@@ -127,107 +132,92 @@ export default function Landing() {
           textAlign: "center",
         }}
       >
+        {/* Title */}
         <h1
           style={{
-            fontSize: "56px",
-            marginBottom: "20px",
+            fontSize: "48px",
             fontWeight: 700,
             color: "#2B2B2B",
+            marginBottom: "16px",
+            textTransform: "uppercase",
+            letterSpacing: "2px",
           }}
         >
-          ElderEase
+          VOICE ASSISTANT
         </h1>
 
+        {/* Subtitle */}
         <p
           style={{
             fontSize: "20px",
-            maxWidth: "650px",
-            color: "#4A4A4A",
-            lineHeight: "1.6",
+            color: "#8B7B6F",
+            marginBottom: "60px",
+            fontWeight: 400,
           }}
         >
-          Your all-in-one digital companion for elderly health, prescriptions,
-          reminders, and emergency support.
+          Tap the microphone to speak
         </p>
 
-        {/* Get Started */}
+        {/* Large Mic Button */}
         <button
-          onClick={() => navigate("/onboarding")}
+          onClick={handleMicClick}
           style={{
-            marginTop: "40px",
-            padding: "16px 42px",
-            fontSize: "20px",
-            borderRadius: "14px",
+            width: "140px",
+            height: "140px",
+            borderRadius: "50%",
+            background: isListening ? "#D45E1A" : "#E86E23",
             border: "none",
-            background: "#E86E23",
-            color: "#fff",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            fontSize: "64px",
             cursor: "pointer",
-            fontWeight: 600,
-            transition: "0.3s",
+            boxShadow: isListening
+              ? "0 0 30px rgba(232, 110, 35, 0.6)"
+              : "0 8px 25px rgba(232, 110, 35, 0.3)",
+            transition: "all 0.3s ease",
           }}
-          onMouseEnter={(e) => (e.target.style.background = "#D45E1A")}
-          onMouseLeave={(e) => (e.target.style.background = "#E86E23")}
+          onMouseEnter={(e) => {
+            if (!isListening) {
+              e.target.style.transform = "scale(1.05)";
+            }
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.transform = "scale(1)";
+          }}
         >
-          Get Started →
+          🎤
         </button>
 
-        {/* Login + Signup */}
-        <div
+        {/* Status Text */}
+        <p
           style={{
-            marginTop: "35px",
-            display: "flex",
-            gap: "20px",
+            marginTop: "60px",
+            fontSize: "18px",
+            color: "#6B5E54",
+            fontWeight: 500,
           }}
         >
-          <button
-            onClick={() => navigate("/login")}
+          {isListening ? "Listening..." : "How are you feeling today?"}
+        </p>
+
+        {/* Transcript Display */}
+        {transcript && (
+          <div
             style={{
-              padding: "14px 40px",
-              fontSize: "18px",
-              borderRadius: "14px",
-              border: "1px solid #CFCFCF",
-              background: "white",
-              cursor: "pointer",
-              color: "#3A3A3A",
-              fontWeight: 500,
-              transition: "0.3s",
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.borderColor = "#E86E23";
-              e.target.style.color = "#E86E23";
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.borderColor = "#CFCFCF";
-              e.target.style.color = "#3A3A3A";
+              marginTop: "40px",
+              padding: "20px 30px",
+              background: "#F0EFE4",
+              borderRadius: "12px",
+              maxWidth: "500px",
+              color: "#2B2B2B",
+              fontSize: "16px",
+              lineHeight: "1.6",
             }}
           >
-            Log In
-          </button>
-
-          <button
-            onClick={() => navigate("/signup")}
-            style={{
-              padding: "14px 40px",
-              fontSize: "18px",
-              borderRadius: "14px",
-              background: "#C5B6A7",
-              border: "none",
-              cursor: "pointer",
-              color: "#3A3A3A",
-              fontWeight: 500,
-              transition: "0.3s",
-            }}
-            onMouseEnter={(e) => (e.target.style.background = "#B5A697")}
-            onMouseLeave={(e) => (e.target.style.background = "#C5B6A7")}
-          >
-            Sign Up
-          </button>
-        </div>
-      </div>
-
-      {/* SETUP STEPS */}
-      <div id="setup">
-        <SetupSteps />
+            <strong>You said:</strong> {transcript}
+          </div>
+        )}
       </div>
     </div>
   );

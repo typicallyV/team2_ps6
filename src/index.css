@@ -1,3 +1,45 @@
+/* Import Google Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap");
+
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  background-color: #F6F7EC;
+  font-family: "Poppins", "Inter", sans-serif;
+  color: #2B2B2B;
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+  background-color: #F6F7EC;
+}
+
+/* Scrollbar styling (optional) */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F6F7EC;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D0C6B7;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #A89884;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

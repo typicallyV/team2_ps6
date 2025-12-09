@@ -12,7 +12,7 @@ export default function Signup() {
     <div
       style={{
         minHeight: "100vh",
-        background: "linear-gradient(to bottom right, #f5e5df, #e8f0ff)",
+        background: "#E4E9D9", // same background as screenshot
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -21,15 +21,31 @@ export default function Signup() {
     >
       <div
         style={{
-          width: "480px",
-          background: "#fff",
-          borderRadius: "22px",
-          padding: "40px",
-          boxShadow: "0 20px 40px rgba(0,0,0,0.1)",
+          width: "520px",
+          background: "#FAF9F0", // off-white warm card
+          borderRadius: "24px",
+          padding: "50px",
+          boxShadow: "0px 8px 25px rgba(0,0,0,0.08)", // soft shadow
         }}
       >
-        <h1 style={{ marginBottom: 10 }}>Create Your Account</h1>
-        <p style={{ marginBottom: 30, opacity: 0.7 }}>
+        <h1
+          style={{
+            marginBottom: 10,
+            fontSize: "28px",
+            color: "#2A2A2A",
+            fontWeight: "700",
+          }}
+        >
+          Create Your Account
+        </h1>
+
+        <p
+          style={{
+            marginBottom: 35,
+            color: "#6F6F6F",
+            fontSize: "16px",
+          }}
+        >
           Join ElderEase and simplify care for your loved ones.
         </p>
 
@@ -67,14 +83,14 @@ export default function Signup() {
 
         <p
           style={{
-            marginTop: 20,
+            marginTop: 25,
             textAlign: "center",
-            opacity: 0.7,
+            color: "#6F6F6F",
           }}
         >
           Already have an account?{" "}
-          <Link to="/login" style={{ color: "#ff6600" }}>
-            Log in
+          <Link to="/login" style={{ color: "#EB8A2F", fontWeight: "600" }}>
+            Log In
           </Link>
         </p>
       </div>
@@ -84,22 +100,25 @@ export default function Signup() {
 
 const inputStyle = {
   width: "100%",
-  padding: "14px",
-  marginBottom: "20px",
-  borderRadius: "12px",
-  border: "1px solid #ddd",
-  background: "#f8f3ef",
-  fontSize: "15px",
+  padding: "18px",
+  marginBottom: "22px",
+  borderRadius: "14px",
+  border: "1px solid #D7D5C8",
+  background: "#EEEDE4",
+  fontSize: "16px",
+  outline: "none",
+  color: "#2A2A2A",
 };
 
 const buttonStyle = {
   width: "100%",
-  padding: "14px",
-  background: "linear-gradient(to right, #ff8a00, #e53e3e)",
+  padding: "16px",
+  background: "#EB8A2F", // solid orange like screenshot
   border: "none",
-  borderRadius: "30px",
+  borderRadius: "22px",
   color: "white",
-  fontSize: "16px",
+  fontSize: "18px",
   cursor: "pointer",
   marginTop: "10px",
+  fontWeight: "600",
 };

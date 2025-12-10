@@ -137,8 +137,9 @@ const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
         </h2>
 
         <div style={{ display: "flex", alignItems: "center", gap: "18px" }}>
-          {/* Mic Button */}
+          {/* Mic Button — navigate to voice assistant */}
           <div
+            onClick={() => navigate("/voice-assistant")}
             style={{
               width: "44px",
               height: "44px",

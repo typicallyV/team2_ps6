@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function VoiceAssistant() {
+  const navigate = useNavigate();
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
 
@@ -48,8 +50,9 @@ export default function VoiceAssistant() {
         </h2>
 
         <div style={{ display: "flex", alignItems: "center", gap: "18px" }}>
-          {/* Mic Button */}
+          {/* Mic Button — navigate to voice assistant */}
           <div
+            onClick={() => navigate("/voice-assistant")}
             style={{
               width: "44px",
               height: "44px",

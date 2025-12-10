@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { AiOutlineUpload } from "react-icons/ai";
 import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
 
 export default function Prescription() {
+  const navigate = useNavigate();
   const [files, setFiles] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([
     // local dummy initial data (server entries will replace/augment this if available)
@@ -223,8 +225,9 @@ export default function Prescription() {
         </h2>
 
         <div style={{ display: "flex", alignItems: "center", gap: "18px" }}>
-          {/* Mic Button */}
+          {/* Mic Button — navigate to voice assistant */}
           <div
+            onClick={() => navigate("/voice-assistant")}
             style={{
               width: "44px",
               height: "44px",

@@ -6,8 +6,8 @@ export default function SetupSteps() {
 
   const flashcards = [
     {
-      title: "Enter Patient Info",
-      desc: "Add basic details like age, medical history, and contact info."
+      title: "Tracker",
+      desc: "Monitor vital signs and health metrics easily."
     },
     {
       title: "Upload Prescription",
@@ -45,7 +45,7 @@ export default function SetupSteps() {
         }}
       >
         {flashcards.map((card) => {
-          const isPatientCard = card.title === "Enter Patient Info";
+          const isTrackerCard = card.title === "Tracker";
           const isPrescriptionCard = card.title === "Upload Prescription";
           const isReminderCard = card.title === "Reminder";
           const isVoiceCard = card.title === "Voice Assistant";
@@ -53,8 +53,8 @@ export default function SetupSteps() {
             <div
               key={card.title}
               onClick={
-                isPatientCard
-                  ? () => navigate("/onboarding")
+                isTrackerCard
+                  ? () => navigate("/healthmoodmenu")
                   : isPrescriptionCard
                   ? () => navigate("/prescriptions")
                   : isReminderCard
@@ -70,7 +70,7 @@ export default function SetupSteps() {
                 background: "#f1f6ff",
                 boxShadow: "0 8px 20px rgba(0,0,0,0.06)",
                 textAlign: "center",
-                cursor: isPatientCard || isPrescriptionCard || isReminderCard || isVoiceCard ? "pointer" : "default"
+                cursor: isTrackerCard || isPrescriptionCard || isReminderCard || isVoiceCard ? "pointer" : "default"
               }}
             >
               <h3 style={{ marginBottom: "10px" }}>{card.title}</h3>

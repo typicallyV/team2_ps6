@@ -9,6 +9,9 @@ import Signup from "./pages/Signup.jsx";
 import Prescription from "./pages/Prescription.jsx";
 import VoiceAssistant from "./pages/VoiceAssistant.jsx";
 import Reminder from "./pages/Reminder.jsx";
+import HealthMoodMenu from "./pages/HealthMoodMenu.jsx";
+import MoodTrackerPage from "./pages/MoodTrackerPage.jsx";
+import HealthTracker from "./pages/HealthTracker.jsx";
 
 export default function App() {
   return (
@@ -23,6 +26,9 @@ export default function App() {
         <Route path="/prescriptions" element={<Prescription />} />
         <Route path="/voice-assistant" element={<VoiceAssistant />} />
         <Route path="/reminder" element={<Reminder />} />
+        <Route path="/healthmoodmenu" element={<HealthMoodMenu />} />
+        <Route path="/moodtracker" element={<MoodTrackerPage />} />
+         <Route path="healthtracker" element={<HealthTracker />} />
       </Routes>
     </BrowserRouter>
   );

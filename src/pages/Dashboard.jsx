@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const REMINDERS_KEY = "elderease_reminders";
 const ONBOARDING_KEY = "elderease_onboarding";
+const MOOD_HISTORY_KEY = "elderease_mood_history";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -10,6 +11,8 @@ export default function Dashboard() {
   const [completedReminders, setCompletedReminders] = useState({});
   const [isListening, setIsListening] = useState(false);
   const [onboardingData, setOnboardingData] = useState(null);
+  const [lastMoodRecorded, setLastMoodRecorded] = useState(null);
+  const [lastMoodEmoji, setLastMoodEmoji] = useState(null);
 
   // Load reminders from localStorage on mount and when other pages update
   useEffect(() => {
@@ -46,13 +49,51 @@ export default function Dashboard() {
     }
   }, []);
 
+  // Record mood to localStorage
+  const recordMood = (moodLabel, moodEmoji) => {
+    const today = new Date().toISOString().split("T")[0];
+    const time = new Date().toLocaleTimeString();
+    
+    const moodEntry = {
+      id: Date.now(),
+      mood: moodLabel,
+      emoji: moodEmoji,
+      date: today,
+      time: time,
+      timestamp: new Date().toLocaleString(),
+      tags: [],
+      notes: "",
+    };
+
+    // Get existing mood history
+    const storedHistory = localStorage.getItem(MOOD_HISTORY_KEY);
+    const moodHistory = storedHistory ? JSON.parse(storedHistory) : [];
+
+    // Add new mood entry
+    const updatedHistory = [moodEntry, ...moodHistory];
+    localStorage.setItem(MOOD_HISTORY_KEY, JSON.stringify(updatedHistory));
+    
+    // Update UI feedback with both name and emoji
+    setLastMoodRecorded(moodLabel);
+    setLastMoodEmoji(moodEmoji);
+    
+    // Auto-clear message after 3 seconds
+    setTimeout(() => {
+      setLastMoodRecorded(null);
+      setLastMoodEmoji(null);
+    }, 3000);
+    
+    // Notify other components
+    window.dispatchEvent(new Event("moodUpdated"));
+  };
+
   // Get greeting based on time
   const getGreeting = () => {
     const hour = new Date().getHours();
     const name = onboardingData?.name || "User";
-    if (hour < 12) return `Good Morning, ${name}! `;
-    if (hour < 18) return `Good Afternoon, ${name}! `;
-    return `Good Evening, ${name}! `;
+    if (hour < 12) return `Good Morning, ${name}!`;
+    if (hour < 18) return `Good Afternoon, ${name}!`;
+    return `Good Evening, ${name}!`;
   };
 
   // Get today's reminders
@@ -104,8 +145,10 @@ export default function Dashboard() {
         </h2>
 
         <div style={{ display: "flex", gap: "14px", alignItems: "center" }}>
+          
           {/* Voice Button */}
           <div
+          onClick={() => navigate("/voice-assistant")}
             style={{
               width: "48px",
               height: "48px",
@@ -120,6 +163,24 @@ export default function Dashboard() {
             }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M480-400q-50 0-85-35t-35-85v-240q0-50 35-85t85-35q50 0 85 35t35 85v240q0 50-35 85t-85 35Zm0-240Zm-40 520v-123q-104-14-172-93t-68-184h80q0 83 58.5 141.5T480-320q83 0 141.5-58.5T680-520h80q0 105-68 184t-172 93v123h-80Zm40-360q17 0 28.5-11.5T520-520v-240q0-17-11.5-28.5T480-800q-17 0-28.5 11.5T440-760v240q0 17 11.5 28.5T480-480Z"/></svg>
+            
+          </div>
+
+          {/* Greeting in Navbar */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              background: "linear-gradient(135deg, #EB8A2F 0%, #D47A1F 100%)",
+              padding: "10px 18px",
+              borderRadius: "12px",
+              color: "white",
+              fontSize: "14px",
+              fontWeight: 600,
+            }}
+          >
+            {getGreeting()}
           </div>
 
           {/* Language */}
@@ -139,23 +200,6 @@ export default function Dashboard() {
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-155.5t86-127Q252-817 325-848.5T480-880q83 0 155.5 31.5t127 86q54.5 54.5 86 127T880-480q0 82-31.5 155t-86 127.5q-54.5 54.5-127 86T480-80Zm0-82q26-36 45-75t31-83H404q12 44 31 83t45 75Zm-104-16q-18-33-31.5-68.5T322-320H204q29 50 72.5 87t99.5 55Zm208 0q56-18 99.5-55t72.5-87H638q-9 38-22.5 73.5T584-178ZM170-400h136q-3-20-4.5-39.5T300-480q0-21 1.5-40.5T306-560H170q-5 20-7.5 39.5T160-480q0 21 2.5 40.5T170-400Zm216 0h188q3-20 4.5-39.5T580-480q0-21-1.5-40.5T574-560H386q-3 20-4.5 39.5T380-480q0 21 1.5 40.5T386-400Zm268 0h136q5-20 7.5-39.5T800-480q0-21-2.5-40.5T790-560H654q3 20 4.5 39.5T660-480q0 21-1.5 40.5T654-400Zm-16-240h118q-29-50-72.5-87T584-782q18 33 31.5 68.5T638-640Zm-234 0h152q-12-44-31-83t-45-75q-26 36-45 75t-31 83Zm-200 0h118q9-38 22.5-73.5T376-782q-56 18-99.5 55T204-640Z"/></svg> EN
           </div>
         </div>
-      </div>
-
-      {/* Personalized Greeting */}
-      <div
-        style={{
-          maxWidth: "650px",
-          margin: "0 auto 28px",
-          background: "linear-gradient(135deg, #EB8A2F 0%, #D47A1F 100%)",
-          padding: "15px",
-          borderRadius: "18px",
-          color: "#fff",
-          boxShadow: "0 6px 20px rgba(235, 138, 47, 0.3)",
-        }}
-      >
-        <h2 style={{ fontSize: "28px", fontWeight: 700, margin: 0 }}>
-          {getGreeting()}
-        </h2>
       </div>
 
       {/* Emergency Button - LARGE with Pulsing Effect */}
@@ -205,7 +249,7 @@ export default function Dashboard() {
         </p>
       </div>
 
-      {/* How are you feeling today - COMPACT */}
+      {/* How are you feeling today - with mood recording */}
       <div
         style={{
           maxWidth: "650px",
@@ -238,6 +282,7 @@ export default function Dashboard() {
         >
           {/* Happy - Green */}
           <button
+            onClick={() => recordMood("Happy", "😊")}
             style={{
               padding: "28px 14px",
               background: "#3BA66D",
@@ -247,7 +292,10 @@ export default function Dashboard() {
               cursor: "pointer",
               fontSize: "26px",
               fontWeight: 600,
+              transition: "all 0.2s ease",
             }}
+            onMouseEnter={(e) => (e.target.style.transform = "scale(1.05)")}
+            onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
           >
             <div style={{ fontSize: "32px", marginBottom: "6px" }}>😊</div>
             Happy
@@ -255,6 +303,7 @@ export default function Dashboard() {
 
           {/* Okay - Teal */}
           <button
+            onClick={() => recordMood("Okay", "😐")}
             style={{
               padding: "28px 14px",
               background: "#2C9FA3",
@@ -264,7 +313,10 @@ export default function Dashboard() {
               cursor: "pointer",
               fontSize: "26px",
               fontWeight: 600,
+              transition: "all 0.2s ease",
             }}
+            onMouseEnter={(e) => (e.target.style.transform = "scale(1.05)")}
+            onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
           >
             <div style={{ fontSize: "32px", marginBottom: "6px" }}>😐</div>
             Okay
@@ -272,6 +324,7 @@ export default function Dashboard() {
 
           {/* Tired - Orange */}
           <button
+            onClick={() => recordMood("Tired", "🥱")}
             style={{
               padding: "28px 14px",
               background: "#F5A623",
@@ -281,7 +334,10 @@ export default function Dashboard() {
               cursor: "pointer",
               fontSize: "26px",
               fontWeight: 600,
+              transition: "all 0.2s ease",
             }}
+            onMouseEnter={(e) => (e.target.style.transform = "scale(1.05)")}
+            onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
           >
             <div style={{ fontSize: "32px", marginBottom: "6px" }}>🥱</div>
             Tired
@@ -289,6 +345,7 @@ export default function Dashboard() {
 
           {/* Unwell - Red */}
           <button
+            onClick={() => recordMood("Unwell", "🤒")}
             style={{
               padding: "28px 14px",
               background: "#E85959",
@@ -298,127 +355,21 @@ export default function Dashboard() {
               cursor: "pointer",
               fontSize: "26px",
               fontWeight: 600,
+              transition: "all 0.2s ease",
             }}
+            onMouseEnter={(e) => (e.target.style.transform = "scale(1.05)")}
+            onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
           >
             <div style={{ fontSize: "32px", marginBottom: "6px" }}>🤒</div>
             Unwell
           </button>
         </div>
-      </div>
 
-      {/* Quick Actions - SAME SIZE AS MOOD */}
-      <div
-        style={{
-          maxWidth: "650px",
-          margin: "0 auto 40px",
-          background: "#FAF9F0",
-          padding: "28px",
-          borderRadius: "18px",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
-        }}
-      >
-        <h3
-          style={{
-            color: "#2A2A2A",
-            marginBottom: "18px",
-            fontSize: "20px",
-            fontWeight: 600,
-          }}
-        >
-          Quick Actions
-        </h3>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "14px",
-          }}
-        >
-          {/* Call Family - Green */}
-          <button
-            style={{
-              padding: "28px 14px",
-              background: "#3BA66D",
-              borderRadius: "14px",
-              border: "none",
-              color: "white",
-              cursor: "pointer",
-              fontWeight: 600,
-              fontSize: "18px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "8px",
-            }}
-          >
-            <span style={{ fontSize: "32px" }}><svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#FFFFFF"><path d="M796-120q-119 0-240-55.5T333-333Q231-435 175.5-556T120-796q0-18.86 12.57-31.43T164-840h147.33q14 0 24.34 9.83Q346-820.33 349.33-806l26.62 130.43q2.05 14.9-.62 26.24-2.66 11.33-10.82 19.48L265.67-530q24 41.67 52.5 78.5T381-381.33q35 35.66 73.67 65.5Q493.33-286 536-262.67l94.67-96.66q9.66-10.34 23.26-14.5 13.61-4.17 26.74-2.17L806-349.33q14.67 4 24.33 15.53Q840-322.27 840-308v144q0 18.86-12.57 31.43T796-120ZM233-592l76-76.67-21-104.66H187q3 41.66 13.67 86Q211.33-643 233-592Zm365.33 361.33q40.34 18.34 85.84 29.67 45.5 11.33 89.16 13.67V-288l-100-20.33-75 77.66ZM233-592Zm365.33 361.33Z"/></svg></span> Call Family
-          </button>
-
-          {/* Medicines - Teal */}
-          <button
-            style={{
-              padding: "28px 14px",
-              background: "#2C9FA3",
-              borderRadius: "14px",
-              border: "none",
-              color: "white",
-              cursor: "pointer",
-              fontWeight: 600,
-              fontSize: "18px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "8px",
-            }}
-          >
-            <span style={{ fontSize: "32px" }}>💊</span> Medicines
-          </button>
-
-          {/* Appointments - Orange */}
-          <button
-            style={{
-              padding: "28px 14px",
-              background: "#F5A623",
-              borderRadius: "14px",
-              border: "none",
-              color: "white",
-              cursor: "pointer",
-              fontWeight: 600,
-              fontSize: "18px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "8px",
-            }}
-          >
-            <span style={{ fontSize: "32px" }}><svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#FFFFFF"><path d="M186.67-633.33h586.66v-113.34H186.67v113.34Zm0 0v-113.34 113.34Zm0 553.33q-27 0-46.84-19.83Q120-119.67 120-146.67v-600q0-27 19.83-46.83 19.84-19.83 46.84-19.83h56.66V-880h70v66.67h333.34V-880h70v66.67h56.66q27 0 46.84 19.83Q840-773.67 840-746.67v280.34q-15.78-7.86-32.39-13.1-16.61-5.24-34.28-8.24v-79H186.67v420h296.66q6.34 18.67 14.84 35 8.5 16.34 20.16 31.67H186.67Zm540.66 40q-79.95 0-136.31-56.35-56.35-56.36-56.35-136.32 0-79.95 56.35-136.31 56.36-56.35 136.31-56.35 79.96 0 136.32 56.35Q920-312.62 920-232.67q0 79.96-56.35 136.32Q807.29-40 727.33-40Zm61.17-93.67 27.83-28-75-75v-112H702V-222l86.5 88.33Z"/></svg></span> Appointments
-          </button>
-
-          {/* Family - Light Gray */}
-          <button
-            style={{
-              padding: "28px 14px",
-              background: "#E8E5DB",
-              borderRadius: "14px",
-              border: "none",
-              color: "#2A2A2A",
-              cursor: "pointer",
-              fontWeight: 600,
-              fontSize: "18px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "8px",
-            }}
-          >
-            <span style={{ fontSize: "32px" }}>👨‍👩‍👧‍👦</span> Family
-          </button>
-        </div>
+        {lastMoodRecorded && (
+          <p style={{ marginTop: "16px", fontSize: "16px", color: "#3BA66D", fontWeight: 600, textAlign: "center" }}>
+            ✓ {lastMoodEmoji} Your mood "{lastMoodRecorded}" recorded
+          </p>
+        )}
       </div>
 
       {/* My Health Info */}
@@ -697,7 +648,7 @@ export default function Dashboard() {
             e.target.style.transform = "scale(1)";
           }}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#FFFFFF"><path d="M480-423q-43 0-72-30.92-29-30.91-29-75.08v-251q0-41.67 29.44-70.83Q437.88-880 479.94-880t71.56 29.17Q581-821.67 581-780v251q0 44.17-29 75.08Q523-423 480-423Zm0-228Zm-30 531v-136q-106-11-178-89t-72-184h60q0 91 64.29 153t155.5 62q91.21 0 155.71-62Q700-438 700-529h60q0 106-72 184t-178 89v136h-60Zm30-363q18 0 29.5-13.5T521-529v-251q0-17-11.79-28.5T480-820q-17.42 0-29.21 11.5T439-780v251q0 19 11.5 32.5T480-483Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#FFFFFF"><path d="M480-423q-43 0-72-30.92-29-30.91-29-75.08v-251q0-41.67 29.44-70.83Q437.88-880 479.94-880t71.56 29.17Q581-821.67 581-780v251q0 44.17-29 75.08Q523-423 480-423Zm0-228Zm-30 531v-136q-106-11-178-89t-72-184h60q0 91 64.29 153t155.5 62q91.21 0 155.71-62Q700-438 700-529h60q0 106-72 184t-178 89v136h-60Zm30-363q18 0 29.5-13.5T521-529v-251q0-17-11.79-28.5T480-820q-17.42 0-29.21 11.5T439-780v251q0 19 11.5 32.5T480-483Z"/></svg>
         </button>
 
         <p style={{ marginTop: "18px", color: "#2A2A2A", fontWeight: 600, fontSize: "17px" }}>

@@ -45,6 +45,7 @@ export default function Landing() {
         <div style={{ display: "flex", alignItems: "center", gap: "18px" }}>
           {/* Mic Button */}
           <div
+          onClick={() => navigate("/voice-assistant")}
             style={{
               width: "44px",
               height: "44px",

@@ -217,14 +217,14 @@ export default function Dashboard() {
         }
       `}</style>
 
-      <div style={{ textAlign: "center", marginTop: "20px", marginBottom: "50px" }}>
+      <div style={{ textAlign: "center", marginTop: "80px", marginBottom: "50px" }}>
         
         <button
           className="emergency-btn"
           style={{
             background: "#FF4D4D",
             color: "white",
-            padding: "32px 90px",
+            padding: "40px 90px",
             borderRadius: "80px",
             fontWeight: "bold",
             fontSize: "30px",

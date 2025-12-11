@@ -331,35 +331,6 @@ export default function Prescription() {
                 </div>
 
                 <div style={{ display: "flex", gap: 10 }}>
-                  {/* View (preview modal) */}
-                  <button
-                    onClick={() => {
-                      if (fileItem.url) {
-                        setSelectedFile(fileItem.url);
-                      } else if (fileItem.file) {
-                        setSelectedFile(fileItem.file);
-                        if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl);
-                        const objUrl = URL.createObjectURL(fileItem.file);
-                        setPreviewObjectUrl(objUrl);
-                      } else {
-                        window.alert("No file available to view for this item.");
-                      }
-                    }}
-                    style={{
-                      background: "#EB8A2F",
-                      color: "#fff",
-                      padding: "10px 16px",
-                      borderRadius: 10,
-                      border: "none",
-                      cursor: fileItem.url || fileItem.file ? "pointer" : "not-allowed",
-                      opacity: fileItem.url || fileItem.file ? 1 : 0.6,
-                      fontSize: 14,
-                      fontWeight: 500,
-                    }}
-                  >
-                    View
-                  </button>
-
                   {/* Open in new tab */}
                   <button
                     onClick={() => {

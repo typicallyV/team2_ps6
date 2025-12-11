@@ -84,7 +84,12 @@ const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
     window.dispatchEvent(new Event("remindersUpdated"));
   };
 
-  const dateStr = currentDate.toISOString().split("T")[0];
+ const dateStr =
+  currentDate.getFullYear() +
+  "-" +
+  String(currentDate.getMonth() + 1).padStart(2, "0") +
+  "-" +
+  String(currentDate.getDate()).padStart(2, "0");
   const filteredReminders = reminders.filter(r => {
     const isSameDay = r.date === dateStr;
     if (filter === "done") return isSameDay && r.done;
@@ -509,7 +514,11 @@ const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
             <input
               type="date"
-              value={newReminder.date ? newReminder.date.toISOString().split("T")[0] : ""}
+             value={
+  newReminder.date
+    ? `${newReminder.date.getFullYear()}-${String(newReminder.date.getMonth() + 1).padStart(2, "0")}-${String(newReminder.date.getDate()).padStart(2, "0")}`
+    : ""
+}
               onChange={(e) => setNewReminder({ ...newReminder, date: new Date(e.target.value) })}
               style={{
                 width: "100%",

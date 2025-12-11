@@ -114,6 +114,45 @@ export default function Dashboard() {
     });
   };
 
+  const handleEmergencyClick = async () => {
+  const confirmSend = window.confirm("Send WhatsApp SOS?");
+  if (!confirmSend) return;
+
+  try {
+    const position = await new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(
+        (pos) =>
+          resolve({
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+          }),
+        (err) => reject(err),
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 } // <-- Added
+  );
+    });
+
+    const locationLink = `https://maps.google.com?q=${position.lat},${position.lng}`;
+    const emergencyNumber = onboardingData?.emergencyContact;
+
+    const response = await fetch("http://localhost:5000/send-sos", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        emergencyNumber,
+        locationLink,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data.success) alert("🚨 WhatsApp SOS Sent!");
+    else alert("Failed to send SOS alert.");
+  } catch (error) {
+    alert("Error sending SOS alert.");
+  }
+};
+
+
   return (
     <div
       style={{
@@ -232,6 +271,7 @@ export default function Dashboard() {
             cursor: "pointer",
             transition: "all 0.3s ease",
           }}
+          onClick={handleEmergencyClick}
           onMouseEnter={(e) => {
             e.target.style.transform = "scale(1.08)";
             e.target.style.background = "#E63939";

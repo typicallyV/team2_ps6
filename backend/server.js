@@ -1,5 +1,6 @@
 require("dotenv").config();
 
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -24,6 +25,9 @@ mongoose
 
 // ---- MOUNT ROUTES ----
 app.use("/", require("./routes/uploadRoutes"));
+
+// SOS Route
+app.use("/", require("./routes/sosRoutes"));
 
 // ---- LISTEN ----
 const PORT = process.env.PORT || 5000;

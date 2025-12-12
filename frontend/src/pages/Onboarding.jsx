@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-
+import { API_BASE } from "../config";
 const ONBOARDING_KEY = "elderease_onboarding";
-const API_BASE = "http://localhost:5000/api/onboarding/complete"; // FIXED: Added /complete
+  // FIXED: Added /complete
 
 export default function Onboarding() {
   // Mock navigation for demo - replace with your actual router
@@ -44,7 +44,7 @@ export default function Onboarding() {
       setError(null);
 
       try {
-        const response = await fetch(API_BASE, {
+        const response = await fetch(`${API_BASE}/api/onboarding/complete`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

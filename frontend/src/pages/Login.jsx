@@ -1,9 +1,9 @@
 // src/pages/Login.jsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
+import { API_BASE } from "../config";
 // API BASE URL from .env (React uses REACT_APP_*)
-const API = process.env.REACT_APP_API_URL || "http://localhost:5000";
+ 
 
 export default function Login() {
   const [data, setData] = useState({ email: "", password: "" });
@@ -17,7 +17,7 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const res = await fetch(`${API}/api/auth/login`, {
+      const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

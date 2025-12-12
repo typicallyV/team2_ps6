@@ -1,12 +1,14 @@
 import React, { useState, useEffect,useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import SetupSteps from "./SetupSteps.jsx";
+import { API_BASE } from "../config";
+import { REMINDERS_API } from "../config";
 const REMINDERS_KEY = "elderease_reminders";
 const ONBOARDING_KEY = "elderease_onboarding";
 const MOOD_HISTORY_KEY = "elderease_mood_history";
-const API_BASE ="http://localhost:5000/api/auth"; // Adjust to your backend
-const REMINDERS_API = "http://localhost:5000/api/reminders";
-const ONBOARDING_API = "http://localhost:5000/api/onboarding/status";
+import { ONBOARDING_API } from "../config";
+ 
+ 
 export default function Dashboard() {
   const navigate = useNavigate();
 
@@ -29,9 +31,9 @@ export default function Dashboard() {
     const fetchProfile = async () => {
       setProfileLoading(true);
        console.log("🔍 API_BASE:", API_BASE);
-    console.log("🔍 Full URL:", `${API_BASE}/profile`);
+    console.log("🔍 Full URL:", `${API_BASE}/api/auth/profile`);
       try {
-        const res = await fetch(`${API_BASE}/profile`, {
+        const res = await fetch(`${API_BASE}/api/auth/profile`, {
           method: "GET",
           credentials: "include", // Send cookies
         });
@@ -338,7 +340,7 @@ const handleEmergencyClick = async () => {
     if (!reminder) return;
 
     try {
-      const response = await fetch(`${REMINDERS_API}/${id}`, {
+      const response = await fetch(`${REMINDERS_API} /${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -379,7 +381,7 @@ console.log("📋 Remaining reminders:", todaysReminders);
   // ============= LOGOUT (Cookie + localStorage) =============
   const handleLogout = async () => {
     try {
-      await fetch(`${API_BASE}/logout`, {
+      await fetch(`${API_BASE}/api/auth/logout`, {
         method: "POST",
         credentials: "include",
       });

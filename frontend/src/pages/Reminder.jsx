@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-
-const API_URL = "http://localhost:5000/api/reminders";
+import { API_BASE } from "../config";
+ 
 
 export default function Reminder() {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -20,7 +20,7 @@ export default function Reminder() {
   const fetchReminders = async () => {
     try {
       setLoading(true);
-      const response = await fetch(API_URL, {
+      const response = await fetch(`${API_BASE}/api/reminders`, {
         credentials: "include", // Important for cookies
       });
       
@@ -76,7 +76,7 @@ export default function Reminder() {
         String(dateObj.getDate()).padStart(2, "0");
 
       try {
-        const response = await fetch(API_URL, {
+        const response = await fetch(`${API_BASE}/api/reminders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -118,7 +118,7 @@ export default function Reminder() {
     if (!reminder) return;
 
     try {
-      const response = await fetch(`${API_URL}/${id}`, {
+      const response = await fetch(`${API_BASE}/api/reminders/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -146,7 +146,7 @@ export default function Reminder() {
 
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`${API_URL}/${id}`, {
+      const response = await fetch(`${API_BASE}/api/reminders/${id}`, {
         method: "DELETE",
         credentials: "include",
       });

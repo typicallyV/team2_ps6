@@ -1,8 +1,8 @@
  // src/pages/Signup.jsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
-const API_BASE = "http://localhost:5000/api/auth"; // backend URL
+import { API_BASE } from "../config";
+ // backend URL
 
 export default function Signup() {
   const [data, setData] = useState({
@@ -32,7 +32,7 @@ export default function Signup() {
     }
 
     try {
-      const res = await fetch(`${API_BASE}/register`, {
+      const res = await fetch(`${API_BASE}/api/auth/register`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },

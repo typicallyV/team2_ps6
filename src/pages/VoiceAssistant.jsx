@@ -240,6 +240,54 @@ export default function VoiceAssistant() {
     const raw = speech.replace(/\ba\s*m\b/gi, "am").replace(/\bp\s*m\b/gi, "pm");
     setTranscript(raw);
 
+    // --- NAVIGATION COMMAND HANDLER ---
+    const navMatch = raw.match(/\b(?:go to|open|navigate to|take me to|show me)\s+(.+)/i);
+    if (navMatch) {
+      let target = navMatch[1].toLowerCase().trim();
+      // remove filler words
+      target = target.replace(/\b(the|page|screen|app)\b/gi, "").trim();
+
+      const ROUTES = {
+        prescriptions: "/prescriptions",
+        prescription: "/prescriptions",
+        reminders: "/reminder",
+        reminder: "/reminder",
+        dashboard: "/dashboard",
+        home: "/",
+        landing: "/",
+        "voice assistant": "/voice-assistant",
+        voice: "/voice-assistant",
+        "health tracker": "/healthtracker",
+        health: "/healthtracker",
+        "mood tracker": "/moodtracker",
+        mood: "/moodtracker",
+        "health mood menu": "/healthmoodmenu",
+        onboarding: "/onboarding",
+        login: "/login",
+        signup: "/signup",
+        register: "/signup",
+        prescriptions: "/prescriptions"
+        // add more mappings as needed
+      };
+
+      // try direct map, else build a safe slug fallback
+      let path = ROUTES[target];
+      if (!path) {
+        // try simple normalized key (remove spaces)
+        const key = target.replace(/\s+/g, "");
+        path = ROUTES[key] || `/${key}`;
+      }
+
+      try {
+        navigate(path);
+        setMessage({ type: "success", text: `Navigating to ${target}` });
+      } catch (e) {
+        setMessage({ type: "error", text: `Cannot navigate to "${target}"` });
+      }
+      return; // stop further reminder parsing
+    }
+    // --- end navigation handler ---
+
     const timeObj = parseTimeFromText(raw);
     const dateObj = parseDateFromText(raw);
 

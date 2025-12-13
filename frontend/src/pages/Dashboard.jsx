@@ -188,7 +188,7 @@ const recordMood = async (moodLabel, moodEmoji) => {
 
   try {
     // send to server
-    const res = await fetch("http://localhost:5000/api/moods", {
+    const res = await fetch(`${API_BASE}/api/moods`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -289,7 +289,7 @@ const handleEmergencyClick = async () => {
 
     console.log("📤 Sending SOS...");
 
-    const response = await fetch("http://localhost:5000/send-sos", {
+    const response = await fetch(`${API_BASE}/send-sos`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

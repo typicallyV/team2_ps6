@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { AiOutlineUpload } from "react-icons/ai";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
-
+import { API_BASE } from "../config";
 export default function Prescription() {
   const navigate = useNavigate();
   const [files, setFiles] = useState([]);
@@ -16,8 +16,8 @@ export default function Prescription() {
 
   // Fetch prescriptions from backend on mount
   useEffect(() => {
-    console.log("🔄 Fetching prescriptions from: http://localhost:5000/prescriptions");
-    fetch("http://localhost:5000/api/prescriptions", { credentials: "include" })
+    
+    fetch(`${API_BASE}/api/prescriptions`, { credentials: "include" })
   .then(res => {
     if (!res.ok) throw new Error("Network response was not ok");
     return res.json();
@@ -56,7 +56,7 @@ export default function Prescription() {
 formData.append("file", file);
 
     try {
-      const response = await fetch("http://localhost:5000/api/prescriptions/upload", {
+      const response = await fetch(`${API_BASE}/api/prescriptions/upload`, {
        method: "POST",
        body: formData,
        credentials: "include",
@@ -116,10 +116,10 @@ formData.append("file", file);
     // returns a src string for embed/img if available, or null if preview should use File object
     if (typeof item === "string") {
       // selectedFile is a URL string
-      return item.startsWith("http") ? item : `http://localhost:5000/${item.replace(/^\/+/, "")}`;
+      return item.startsWith("http") ? item : `${API_BASE}/${item.replace(/^\/+/, "")}`;
     }
     if (item && item.url) {
-      return item.url.startsWith("http") ? item.url : `http://localhost:5000/${item.url.replace(/^\/+/, "")}`;
+      return item.url.startsWith("http") ? item.url : `${API_BASE}/${item.url.replace(/^\/+/, "")}`;
     }
     if (item && item.file) {
       // For File objects we'll createObjectURL when rendering
@@ -135,7 +135,7 @@ formData.append("file", file);
         // server URL - fetch blob then download
         const url = fileItem.url.startsWith("http")
           ? fileItem.url
-          : `http://localhost:5000/${fileItem.url.replace(/^\/+/, "")}`;
+          : `${API_BASE}/${fileItem.url.replace(/^\/+/, "")}`;
         const res = await fetch(url);
         if (!res.ok) throw new Error("Failed to download file");
         const blob = await res.blob();
@@ -176,7 +176,7 @@ formData.append("file", file);
 
     // Attempt server delete
     try {
-      const res = await fetch(`http://localhost:5000/api/prescriptions/${fileItem.id}`, {
+      const res = await fetch(`${API_BASE}/api/prescriptions/${fileItem.id}`, {
   method: "DELETE",
   credentials: "include",
 });
@@ -434,14 +434,14 @@ formData.append("file", file);
               // server-provided path or url
               selectedFile.toLowerCase().endsWith(".pdf") ? (
                 <embed
-                  src={selectedFile.startsWith("http") ? selectedFile : `http://localhost:5000/${selectedFile.replace(/^\/+/, "")}`}
+                  src={selectedFile.startsWith("http") ? selectedFile : `${API_BASE}/${selectedFile.replace(/^\/+/, "")}`}
                   width="700"
                   height="500"
                   type="application/pdf"
                 />
               ) : (
                 <img
-                  src={selectedFile.startsWith("http") ? selectedFile : `http://localhost:5000/${selectedFile.replace(/^\/+/, "")}`}
+                  src={selectedFile.startsWith("http") ? selectedFile : `${API_BASE}/${selectedFile.replace(/^\/+/, "")}`}
                   alt="Prescription"
                   style={{ maxWidth: "100%", maxHeight: "80vh" }}
                 />

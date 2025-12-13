@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { API_BASE } from "../config";
 const MOOD_HISTORY_KEY = "elderease_mood_history";
 
 export default function MoodTrackerPage() {
@@ -39,7 +39,7 @@ export default function MoodTrackerPage() {
   const loadMoodHistory = async () => {
     // Try backend first
     try {
-      const res = await fetch("http://localhost:5000/api/moods", {
+      const res = await fetch(`${API_BASE}/api/moods`, {
         credentials: "include",
       });
 
@@ -109,7 +109,7 @@ export default function MoodTrackerPage() {
   };
 
   try {
-    const res = await fetch("http://localhost:5000/api/moods", {
+    const res = await fetch(`${API_BASE}/api/moods`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -151,7 +151,7 @@ export default function MoodTrackerPage() {
 
 	const handleDeleteMood = async (id) => {
   try {
-    const res = await fetch(`http://localhost:5000/api/moods/${id}`, {
+    const res = await fetch(`${API_BASE}/api/moods/${id}`, {
       method: "DELETE",
       credentials: "include",
     });

@@ -3,10 +3,11 @@ import { useNavigate } from "react-router-dom";
 import SetupSteps from "./SetupSteps.jsx";
 import { API_BASE } from "../config";
 import { REMINDERS_API } from "../config";
+import { ONBOARDING_API } from "../config";
 const REMINDERS_KEY = "elderease_reminders";
 const ONBOARDING_KEY = "elderease_onboarding";
 const MOOD_HISTORY_KEY = "elderease_mood_history";
-import { ONBOARDING_API } from "../config";
+
  
  
 export default function Dashboard() {

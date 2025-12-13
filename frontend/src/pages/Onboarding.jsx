@@ -1,14 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { API_BASE } from "../config";
 const ONBOARDING_KEY = "elderease_onboarding";
   // FIXED: Added /complete
 
 export default function Onboarding() {
-  // Mock navigation for demo - replace with your actual router
-  const navigate = (path) => {
-    console.log("Would navigate to:", path);
-    alert(`Onboarding complete! Would redirect to ${path}`);
-  };
+    
+   const navigate = useNavigate();
 
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({

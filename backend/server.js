@@ -61,8 +61,8 @@ app.use(
     store,
     cookie: {
       httpOnly: true,
-      secure: false, // MUST be false for localhost
-      sameSite: "lax", // MUST be 'lax' for localhost (not 'none')
+      secure: process.env.NODE_ENV === "production",  
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 1000 * 60 * 60 * 24 * 7,
       path: "/",
     },

@@ -25,8 +25,23 @@ if (process.env.NODE_ENV === "production") {
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_ORIGIN,
-    credentials: true, // allow cookies
+    origin: (origin, callback) => {
+      // Allow Postman, curl, server-side
+      if (!origin) return callback(null, true);
+
+      // Local development
+      if (origin.startsWith("http://localhost")) {
+        return callback(null, origin);
+      }
+
+      // Allow all Vercel deployments (preview + prod)
+      if (origin.endsWith(".vercel.app")) {
+        return callback(null, origin);
+      }
+
+      return callback(new Error("CORS blocked: " + origin));
+    },
+    credentials: true,
   })
 );
 
